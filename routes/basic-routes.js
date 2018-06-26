@@ -1,8 +1,8 @@
 const fastify = require('fastify')()
+// const mongo = require('../controller/queryControl')
+const bq = require('../controller/BQControl')
 
 async function routes(fastify, options) {
-  const mongo = await require('../controller/queryControl')
-  const bq = await require('../controller/BQControl')
 
   fastify.get('/', async (request, reply) => {
     reply.code(200)
@@ -17,43 +17,55 @@ async function routes(fastify, options) {
   })
 
   fastify.get('/lastquery', async (request, reply) => {
-    try {
-      const data = mongo.lastCreated()
-      if(data){
+    const query = fastify.mongo.db.collection('testing')
+
+    query.find({}, {
+      "_id": 0
+    }).sort({
+      "$natural": -1
+    }).limit(1).toArray(function(err, docs) {
+      if (err) {
+        reply.code(500)
+        reply.send()
+      } else {
+        // delete docs[0]._id
         reply.code(200)
-        reply.send({success:"success"})
-      }else{
-        reply.code(204)
-        reply.send({success:"nodata"})
+        reply.send(docs[0])
       }
-    } catch (e) {
-      console.log(e)
-      reply.code(500)
-      reply.send({fail:"fail"})
-    }
+    })
   })
 
   fastify.post('/query', async (request, reply) => {
-    console.log(request.body)
-    mongo.create(request.body).then(result => {
-      reply.code(201)
-      reply.redirect('/lastquery')
-    }).catch(err => {
-      reply.code(300)
+    const query = fastify.mongo.db.collection('testing')
+    query.insert(request.body, function(err, docs) {
+      if (err) {
+        reply.code(500)
+        reply.send()
+      } else {
+        reply.code(200)
+        reply.send()
+      }
     })
-
   })
 
-  fastify.get('/allTables', async (request, reply) => {
-    try {
-      const result = await bq.getTables()
-      reply.code(200)
-      reply.send()
-    } catch (e) {
-      reply.code(500)
-      reply.send()
-    }
+  fastify.put('/update/:id', async (request, reply) => {
+    const query = fastify.mongo.db.collection('testing')
+
+    query.update({
+      "_id": request.params.id
+    }, {
+        "query": request.body.newQuery
+    },function(err,docs){
+        if(err){
+          reply.code(500)
+          reply.send()
+        }else{
+          reply.code(200)
+          reply.send()
+        }
+    })
   })
+
 }
 
 module.exports = routes

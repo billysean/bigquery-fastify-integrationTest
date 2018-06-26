@@ -1,54 +1,59 @@
 // const server = "http://localhost:3000"
 const request = require('supertest')
 const fastify = require('../app')
-const assert = require('assert')
+const should = require('chai').should()
 
-const newTestQuery = {
+let newTestQuery = {
   queryTitle: "new Query",
   queryDescription: "new Query description 1.0",
-  query: "test",
+  query: "afterlebaran.51",
   queryType: "simpleTest"
 }
 
-beforeEach( ()=>{
-  fastify.ready()
+before(async function() {
+  try {
+    await fastify.ready()
+  } catch (err) {
+    console.error(err);
+    console.error('you might want to restart your mongoDB')
+  }
 })
 
-afterEach( ()=>{
-  fastify.close()
+after(async function() {
+  await fastify.close()
 })
 
-describe('basic routes test', function() {
-
-  it('welcomes the user', async function() {
-    await request(fastify.server).get('/')
-      .expect(200)
-      .expect(/Hello fines user/)
+// MongoDB Integrattion Test
+describe('MongoDB connections', async function() {
+  it('connects to MongoDB', async function() {
+    should.exist(fastify.mongo.db)
   })
 
-  it('returns a length tables to the user', async function() {
-    await request(fastify.server).get('/tables')
-      .expect(200, {
-        length: 20
+  it('connects to Telkomsel Database', async function() {
+    fastify.mongo.db.s.databaseName.should.equal('telkomsel')
+  })
+
+  it('should add data to telkomsel', async function() {
+    await request(fastify.server).post('/query')
+      .send(newTestQuery)
+      .set('Accept', 'application/json')
+      .expect(200)
+  })
+
+  it('should return the last inserted data', async function() {
+    await request(fastify.server).get('/lastquery')
+      .expect(200)
+      .then(response => {
+        newTestQuery = response.body
       })
   })
 
-})
-
-describe('MongoDB connections', function(){
-
-    it('returns last query', async function() {
-      await request(fastify.server).get('/lastquery')
-        .expect(500)
-    })
-
-})
-
-describe('BigQuery connections', function() {
-
-  it('returns a list of ga table', async function() {
-    await request(fastify.server).get('/allTables')
+  it('should update the data in the database', async function() {
+    await request(fastify.server).put('/update/' + newTestQuery._id)
+      .send({
+        "newQuery": "newQuery"
+      })
+      .set('Accept', 'application/json')
       .expect(200)
   })
-
 })
