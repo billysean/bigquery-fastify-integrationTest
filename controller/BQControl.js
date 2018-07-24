@@ -5,6 +5,11 @@ const bigquery = new BigQuery({
 })
 
 module.exports = {
+    checker :()=>{
+        console.log(bigquery.projectId)
+        return bigquery.projectId
+    },
+
     customQuery: (customQuery,legacy = null)=>{
         legacy? legacy = false : legacy = true;
 

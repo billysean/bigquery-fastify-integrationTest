@@ -5,9 +5,9 @@ require('dotenv').config()
 fastify.register(require('./routes/basic-routes'))
 
 // MongoDB
-fastify.register(require('fastify-mongodb'), {
-  url: 'mongodb://localhost:27017/telkomsel'
-})
+// fastify.register(require('fastify-mongodb'), {
+//   url: 'mongodb://localhost:27017/telkomsel'
+// })
 
 // Redis
 // fastify.register(require('fastify-redis'), { host: '127.0.0.1'})

@@ -11,6 +11,7 @@ let newTestQuery = {
 }
 
 before(async function() {
+  // this.enableTimeouts(false)
   try {
     await fastify.ready()
   } catch (err) {

@@ -1,6 +1,6 @@
 const fastify = require('fastify')()
 // const mongo = require('../controller/queryControl')
-const bq = require('../controller/BQControl')
+
 
 async function routes(fastify, options) {
 
