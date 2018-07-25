@@ -54,15 +54,15 @@ async function routes(fastify, options) {
     query.update({
       "_id": request.params.id
     }, {
-        "query": request.body.newQuery
-    },function(err,docs){
-        if(err){
-          reply.code(500)
-          reply.send()
-        }else{
-          reply.code(200)
-          reply.send()
-        }
+      "query": request.body.newQuery
+    }, function(err, docs) {
+      if (err) {
+        reply.code(500)
+        reply.send()
+      } else {
+        reply.code(200)
+        reply.send()
+      }
     })
   })
 

@@ -1,4 +1,3 @@
-// const server = "http://localhost:3000"
 const request = require('supertest')
 const fastify = require('../app')
 const should = require('chai').should()
