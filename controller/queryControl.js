@@ -11,12 +11,12 @@ module.exports = {
       "queryType": data.queryType
     }
 
-    return new Promise( (reject,resolve)=>{
+    return new Promise((reject, resolve) => {
 
       Object.keys(dataInsert).forEach(function(key) {
         if (dataInsert[key] == null) {
           reject()
-        }else{
+        } else {
           mongo.insert(dataInsert).then(result => {
             resolve(result)
           })
