@@ -2,7 +2,8 @@ const fastify = require('fastify')()
 require('dotenv').config()
 
 // routes
-fastify.register(require('./routes/basic-routes'))
+fastify.register(require('./routes/mongo-routes'))
+fastify.register(require('./routes/bq-route'))
 
 // MongoDB
 // fastify.register(require('fastify-mongodb'), {

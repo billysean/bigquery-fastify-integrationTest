@@ -1,21 +1,6 @@
-'use strict';
-const BigQuery = require('@google-cloud/bigquery');
-const bigquery = new BigQuery({
-  projectId: 'master-telkomsel-bq'
-})
 
-module.exports = {
-  createDataset: (datasetName) => {
-    bigquery.createDataset(datasetName)
-      .then(results => {
-        const dataset = results[0]
 
-        console.log('Dataset ${dataset.id} created.')
-      })
-      .catch(err => {
-        console.error(err);
-      })
-  },
+
 
   checker: () => {
     console.log(bigquery.projectId)
