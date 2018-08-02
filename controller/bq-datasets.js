@@ -5,30 +5,16 @@ module.exports = {
     await bigquery.createDataset(datasetName)
       .then(results => {
         const dataset = results[0]
-        console.log('Dataset ${dataset.id} created.')
+        console.log(`Dataset ${dataset.id} created.`)
         return 200
       })
       .catch(err => {
         console.error(err);
-        return 500
+        console.error(err.code);
+        return err.code
       })
   },
 
-  // Deletes the dataset
-  deleteDataset: async (datasetName, biquery) => {
-    const dataset = bigquery.dataset(datasetId);
-
-    await dataset
-      .delete()
-      .then(() => {
-        console.log(`Dataset ${dataset.id} deleted.`);
-        return 200
-      })
-      .catch(err => {
-        console.error('ERROR:', err);
-        return 300
-      });
-  },
 
   // streaming data into bigquery
   insertData: async (bigquery, storage, datasetId, tableId) => {
@@ -62,5 +48,20 @@ module.exports = {
       .catch(err => {
         console.error('ERROR:', err);
       });
+  },
+
+  //list datasets
+  listDatasets: (bigquery)=>{
+    bigquery
+    .getDatasets()
+    .then(results => {
+      const datasets = results[0];
+      console.log('Datasets:');
+      datasets.forEach(dataset => console.log(dataset.id));
+      return datasets
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    });
   }
 }

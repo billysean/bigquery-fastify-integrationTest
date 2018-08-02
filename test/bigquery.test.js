@@ -31,11 +31,13 @@ describe('bigquery Datasets', async function() {
 
   // #3 bigquery can create a dataset
   it('should create a dataset', async function() {
-    await request(fastify.server).post('/create/'+datasetName).expect(400)
+    this.timeout(50000)
+    await request(fastify.server).post('/create/'+datasetName).expect(200)
   })
 
   // #4 bigquery can delete a dataset
   it('should delete a dataset', async function(){
+    this.timeout(50000)
     await request(fastify.server).delete('/remove/'+datasetName).expect(200)
   })
 })
